@@ -20,5 +20,11 @@ app
     const users = await db.select().from(usersTable)
     return c.json(users)
   })
+  .get('/users-hd', async (c) => {
+    const sql = neon(c.env.DATABASE_URL)
+    const db = drizzle(sql)
+    const users = await db.select().from(usersTable)
+    return c.json(users)
+  })
 
 export default app
