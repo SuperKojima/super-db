@@ -1,8 +1,7 @@
-```
-npm install
-npm run dev
-```
+# Super DB
 
-```
-npm run deploy
-```
+- Hono
+- Drizzle
+- Neon
+- Cloudflare Workers
+- Cloudflare Hyperdrive
