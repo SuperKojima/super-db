@@ -1,9 +1,14 @@
 import { Hono } from 'hono'
 
-const app = new Hono<{ Bindings: CloudflareBindings }>()
+interface Env {
+  DATABASE_URL: string
+}
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+const app = new Hono<{ Bindings: Env }>()
+
+app
+  .get('/', (c) => {
+    return c.text('Hello Hono!')
+  })
 
 export default app
