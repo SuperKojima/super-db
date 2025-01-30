@@ -5,10 +5,15 @@
     "deploy": "wrangler deploy --minify"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.39.1",
     "hono": "^4.6.19"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250129.0",
+    "drizzle-kit": "^0.30.4",
+    "tsx": "^4.19.2",
     "wrangler": "^3.106.0"
   }
 }
