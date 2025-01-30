@@ -1,35 +1,35 @@
-import type { NeonDatabase } from 'drizzle-orm/neon-serverless';
-import { Hono } from 'hono'
-import { Client, neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import { drizzle as d } from 'drizzle-orm/neon-http';
-import { usersTable } from './schema';
+import postgres from "postgres";
 
-interface Env {
-  DATABASE_URL: string
-  HYPERDRIVE: Hyperdrive
+export interface Env {
+  HYPERDRIVE: Hyperdrive;
 }
 
-const app = new Hono<{ Bindings: Env }>()
+export default {
+  async fetch(request, env, ctx): Promise<Response> {
+    const sql = postgres(env.HYPERDRIVE.connectionString);
 
-app
-  .get('/', (c) => {
-    return c.text('Hello Hono!')
-  })
-  // .get('/users', async (c) => {
-  //   const sql = neon(c.env.DATABASE_URL)
-  //   const db = drizzle(sql)
-  //   const users = await db.select().from(usersTable)
-  //   return c.json(users)
-  // })
-  .get('/users-hd', async (c) => {
-    const sql = neon(c.env.HYPERDRIVE.connectionString)
-    console.log({
-      HYPERDRIVE: c.env.HYPERDRIVE,
-    })
-    const db = d(sql)
-    const users = await db.select().from(usersTable)
-    return c.json(users)
-  })
+    console.log({HYPERDRIVE: env.HYPERDRIVE});
+    // {
+    //   HYPERDRIVE: Hyperdrive {
+    //     connectionString: 'postgresql://neondb_owner:xxxxxxxxxxxx.hyperdrive.local:5432/neondb?sslmode=disable',
+    //     port: 5432,
+    //     host: 'xxxxxxxxxxxx.hyperdrive.local',
+    //     password: 'xxxxxxxxxxxx',
+    //     user: 'neondb_owner',
+    //     database: 'neondb'
+    //   }
+    // }
 
-export default app
+
+    try {
+      const result = await sql`SELECT * from public."users"`;
+      return Response.json({ result });
+    } catch (e) {
+      console.error(e);
+      return Response.json(
+        { error: e instanceof Error ? e.message : e },
+        { status: 500 }
+      );
+    }
+  },
+} satisfies ExportedHandler<Env>;
